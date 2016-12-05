@@ -1,0 +1,26 @@
+/*
+// button
+curl -X POST -H "Content-Type: application/json" -d '{
+  "setting_type":"call_to_actions",
+  "thread_state":"new_thread",
+  "call_to_actions":[
+    {
+      "title" : "Me ajude",
+      "payload":"USER_DEFINED_PAYLOAD"
+    }
+  ]
+}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=EAAN5QAbMFIsBAGsq2GqLgFC2tljsIEPZB6HBlbgKX3ubZBZCErnulkP93aet8Tpk5m4Y3gr116Mc7RKKhoXQYnZCB7JqESAZAAh6l4YZA8lOEO5NcZBZCF03gwnpX9Tg4pSgsDGxHGJTOQk83Ja4f3eWdfALC7C3krU9qmTv6Nec1QZDZD"
+
+// Text
+curl -X POST -H "Content-Type: application/json" -d '{
+  "setting_type":"greeting",
+  "greeting":{
+    "text":"Oi vou te ajudar a encontrar um lugar massa pra trampar "
+  }
+}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=EAAN5QAbMFIsBAGsq2GqLgFC2tljsIEPZB6HBlbgKX3ubZBZCErnulkP93aet8Tpk5m4Y3gr116Mc7RKKhoXQYnZCB7JqESAZAAh6l4YZA8lOEO5NcZBZCF03gwnpX9Tg4pSgsDGxHGJTOQk83Ja4f3eWdfALC7C3krU9qmTv6Nec1QZDZD"
+
+*/
+
+
+// User data
+//  curl -X GET "https://graph.facebook.com/v2.6/1090761591038429?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=EAAN5QAbMFIsBADIkwP0g4FVXElSfUpKEp8w3MwSZA2RsncmtLlLEJDPNbcBZBSKlaGr8H0EuahEwPVsXdl4cJ3R7gTDCGyqRDSsJmODZAZBFU4hHvcMaJTu8nQjiyeDCY9cGTLZANNJYtv1bhxsd8oZBkPFSUQfdzkrgHjvSi6awZDZD
