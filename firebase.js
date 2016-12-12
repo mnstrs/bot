@@ -77,20 +77,31 @@ function add(path,target,data){
     add(path,title,data)
   }
 
+  // // this function is to add users
+  // this.userAddInfo = function(uf, city, typeOfJob){
+  //
+  //   let path = 'users'
+  //
+  //   let data = {
+  //     // UF          : uf,
+  //     // city        : city,
+  //     // knowledge   : typeOfJob
+  //   }
+  //
+  //   add(path,fullName,data)
+  // }
+
   // this function is to add users
-  this.userAdd = function(fullName, uf, city, typeOfJob){
+  this.userAdd = function(fullName, typeOfJob){
 
     let path = 'users'
 
     let data = {
-      full_name   : fullName,
-      UF          : Uf,
-      city        : city,
-      knowledge   : typeOfJob
+      full_name : fullName,
+      knowledge : typeOfJob
     }
 
     add(path,fullName,data)
-    console.log(fullName)
   }
 
 

@@ -8,7 +8,8 @@ function messenger() {
         user       = new getUser(),
         database   = new firebase(),
         quickAction= new buttons(),
-        token      = "EAAN5QAbMFIsBAGsq2GqLgFC2tljsIEPZB6HBlbgKX3ubZBZCErnulkP93aet8Tpk5m4Y3gr116Mc7RKKhoXQYnZCB7JqESAZAAh6l4YZA8lOEO5NcZBZCF03gwnpX9Tg4pSgsDGxHGJTOQk83Ja4f3eWdfALC7C3krU9qmTv6Nec1QZDZD"
+        token      = "EAAN5QAbMFIsBAGsq2GqLgFC2tljsIEPZB6HBlbgKX3ubZBZCErnulkP93aet8Tpk5m4Y3gr116Mc7RKKhoXQYnZCB7JqESAZAAh6l4YZA8lOEO5NcZBZCF03gwnpX9Tg4pSgsDGxHGJTOQk83Ja4f3eWdfALC7C3krU9qmTv6Nec1QZDZD",
+        areas      = ['Design', 'Front End Developer', 'Back End Developer', 'Full Stack Developer']
 
     // this send messages to the user
     function sendText(sender, text) {
@@ -28,11 +29,12 @@ function messenger() {
 
         }, function(error, response, body) {
             if (error) {
-                console.log('Error: Request', error + "<-")
+                console.log('Error: sendText', error + "<-")
             } else if (response.body.error) {
-                console.log('Error:  Request', response.body.error)
+                console.log('Error:  sendText', response.body.error)
             }
         })
+
     }
 
     // handle messagens
@@ -45,29 +47,39 @@ function messenger() {
       // if user send an text message
       if (event.message){
 
-        let msg = event.message.text
+          let msg = event.message.text
 
-          switch (msg ) {
+          if(areas.indexOf(msg) > -1){
+            database.userAdd(fullName, msg)
+            messageData = quickAction.handleAction('cityAndRegion', name)
+            sendText(sender, messageData)
 
-            case 'Olá':
-              messageData = {  text: msg + ', ' + name }
-            break
+          }else{
 
-            case 'Profissional':
-              let content = quickAction.handleAction('interestArea', name)
-              messageData = content
-            break
+            switch (msg) {
 
-            case 'Empresa':
-              messageData = {  text: 'Desculpe, ainda estamos trabalhando no cadastro de empresa'  }
-            break
+              case 'Olá':
+                messageData = {  text: msg + ', ' + name }
+              break
 
-           default:
-              messageData = {  text: sender + ' ' +  msg + ' ' +  name}
-           }
+              case 'Profissional':
+                messageData = quickAction.handleAction('interestArea', name)
+              break
 
-        // send the result
-        sendText(sender, messageData)
+              case 'Empresa':
+                messageData = {  text: 'Desculpe, ainda estamos trabalhando no cadastro de empresa'  }
+              break
+
+              default:
+                messageData = {  text: 'Você disse: ' + msg}
+            }
+
+
+           // send the result
+           sendText(sender, messageData)
+
+          }
+
       }
 
       // if user click on some button
@@ -105,7 +117,12 @@ function messenger() {
               userData  = user.getInfo(sender),
               firstName = userData.first_name
 
+
+             console.log(event)
+            //  console.log(req.body.entry[0].messaging[i].message.attachments[0].payload.coordinates)
+
               handleMessage(event, sender, firstName, userData)
+
           }
         }
         res.sendStatus(200)

@@ -21,7 +21,7 @@ app.get('/terms', function(req, res) {
 
 // for validation
 app.get('/webhook', function(req, res) {
-  if (req.query['hub.verify_token'] === 'agendinha-b218a') {
+  if (req.query['hub.verify_token'] === 'localhost') {
     res.send(req.query['hub.challenge'])
   }
 })

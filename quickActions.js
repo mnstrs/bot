@@ -44,11 +44,52 @@ function quickReplies(){
                 content_type:'text',
                 title:'Back End Developer',
                 payload:'pick_back-end'
+              },
+              {
+                content_type:'text',
+                title:'Full Stack Developer',
+                payload:'pick_full-stack'
+              }
+
+            ]
+          }
+      break
+
+      case 'choosedArea':
+          text = {
+            text: user+ ', Qual a sua àrea de interesse?',
+            quick_replies:[
+              {
+                content_type:'text',
+                title:'Design',
+                payload:'pick_design'
+              },
+              {
+                content_type:'text',
+                title:'Front End Developer',
+                payload:'pick_front-end'
+              },
+              {
+                content_type:'text',
+                title:'Back End Developer',
+                payload:'pick_back-end'
               }
             ]
           }
       break
 
+      case 'cityAndRegion':
+        text = {
+          text: 'Em qual cidade você quer trabalhar? Digite (Porto Alegre - RS) ou apenas compartilhe a sua localização.',
+          quick_replies:[
+            {
+              content_type:'location',
+              title:'Compartilhar localização',
+              payload:'workAreaWanted'
+            }
+          ]
+        }
+      break
 
      default:
         text = {
