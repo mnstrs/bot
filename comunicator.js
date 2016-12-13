@@ -52,6 +52,8 @@ function messenger() {
           if(areas.indexOf(msg) > -1){
             database.userAdd(fullName, msg)
             messageData = quickAction.handleAction('cityAndRegion', name)
+
+            console.log('hey')
             sendText(sender, messageData)
 
           }else{
@@ -59,7 +61,7 @@ function messenger() {
             switch (msg) {
 
               case 'Olá':
-                messageData = {  text: msg + ', ' + name }
+                messageData = { text: msg + ', ' + name }
               break
 
               case 'Profissional':
@@ -67,13 +69,13 @@ function messenger() {
               break
 
               case 'Empresa':
-                messageData = {  text: 'Desculpe, ainda estamos trabalhando no cadastro de empresa'  }
+                messageData = { text: 'Desculpe, ainda estamos trabalhando no cadastro de empresa'  }
               break
 
               default:
-                messageData = {  text: 'Você disse: ' + msg}
-            }
+                messageData = { text: 'Você disse: ' + msg}
 
+            }
 
            // send the result
            sendText(sender, messageData)
@@ -117,10 +119,9 @@ function messenger() {
               userData  = user.getInfo(sender),
               firstName = userData.first_name
 
+              console.log(event)
 
-             console.log(event)
             //  console.log(req.body.entry[0].messaging[i].message.attachments[0].payload.coordinates)
-
               handleMessage(event, sender, firstName, userData)
 
           }
