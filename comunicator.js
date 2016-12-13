@@ -119,14 +119,17 @@ function messenger() {
               userData  = user.getInfo(sender),
               firstName = userData.first_name
 
-              console.log(event)
+              console.log(event.sender.id)
 
             //  console.log(req.body.entry[0].messaging[i].message.attachments[0].payload.coordinates)
               handleMessage(event, sender, firstName, userData)
 
           }
+
         }
+
         res.sendStatus(200)
+
     }
 
 }

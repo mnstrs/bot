@@ -23,6 +23,9 @@ app.get('/terms', function(req, res) {
 app.get('/webhook', function(req, res) {
   if (req.query['hub.verify_token'] === 'localhost') {
     res.send(req.query['hub.challenge'])
+  } else {
+    console.error("Failed validation. Make sure the validation tokens match.");
+    res.sendStatus(403);
   }
 })
 
