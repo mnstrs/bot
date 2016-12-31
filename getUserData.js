@@ -8,16 +8,15 @@ function getUserData(){
 
   this.getInfo = (sender) => {
 
-      let url = 'https://graph.facebook.com/v2.6/'+sender+'?fields=first_name,last_name,profile_pic&access_token='+ token
+    let url = 'https://graph.facebook.com/v2.6/'+sender+'?fields=first_name,last_name,profile_pic&access_token='+ token
 
     request({
-        url: url,
-        json: true
-
-        },function (error, response, body){
-            if (!error && response.statusCode == 200)
-              userInfo = body
-          }
+          url: url,
+          json: true
+    },function (error, response, body){
+        if (!error && response.statusCode == 200)
+          userInfo = body
+      }
     )
     return userInfo
   }

@@ -32,15 +32,15 @@ function database(){
 
 
 // this add to de db
-function add(path,target,data){
-  let slug      = slugify(target)
-      ,key      = firebase.database().ref().push().key
-      ,updates  = {}
+function add(path,data){
 
-  updates['/' + path + '/' + slug] = data
+  let updates = {}
+
+  updates[path] = data
+
   return fire.database().ref().update(updates)
-}
 
+}
   // this functions is to add enterprises
   this.enterpriseAdd = function(enterprise, state, city, type) {
 
@@ -77,34 +77,42 @@ function add(path,target,data){
     add(path,title,data)
   }
 
-  // // this function is to add users
-  // this.userAddInfo = function(uf, city, typeOfJob){
-  //
-  //   let path = 'users'
-  //
-  //   let data = {
-  //     // UF          : uf,
-  //     // city        : city,
-  //     // knowledge   : typeOfJob
-  //   }
-  //
-  //   add(path,fullName,data)
-  // }
-
   // this function is to add users
-  this.userAdd = function(fullName, typeOfJob){
+  this.userAdd = function(fullName, sender){
 
-    let path = 'users'
+    let path = 'users' + '/' + slugify(fullName),
+        data = {
+          full_name : fullName,
+          sender : sender
+        }
 
-    let data = {
-      full_name : fullName,
-      knowledge : typeOfJob
-    }
-
-    add(path,fullName,data)
+    add(path,data)
   }
 
+  // this function is to add user's knowledge
+  this.knowledgeAdd = function(fullName, typeOfJob){
+
+    let path = 'users' + '/' + slugify(fullName) + '/knowledge',
+        data = typeOfJob
+
+    add(path,data)
+  }
+
+  this.userLocal = function(lat, long, fullName){
+
+    let path = 'users' + '/' + slugify(fullName)  + '/address'
+
+    let data = {
+      lat   : lat,
+      long  : long
+    }
+
+    add(path,data)
+  }
 
 }
+
+
+
 
 module.exports = database

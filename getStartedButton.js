@@ -3,7 +3,7 @@ function getStartedButton() {
   'use strict'
 
   let request = require('request'),
-      token   = "EAAN5QAbMFIsBAGsq2GqLgFC2tljsIEPZB6HBlbgKX3ubZBZCErnulkP93aet8Tpk5m4Y3gr116Mc7RKKhoXQYnZCB7JqESAZAAh6l4YZA8lOEO5NcZBZCF03gwnpX9Tg4pSgsDGxHGJTOQk83Ja4f3eWdfALC7C3krU9qmTv6Nec1QZDZD",
+      token      = "EAAN5QAbMFIsBACvD5rFueZAhxsr6KM3zgrYASWH0isqMfBvR0BvLZAQ8nNckYmk7xqTmA6UtkkbuwRLiGR2YpS8VvdlPxOmtFPvQt0WttEZAagiwNBONgx9crRMSjstaYdTeWZBOkZBVoYYxYSH00y52ZAmNpRVavG31l7IBO0igZDZD",
       getUser = require('./getUserData'),
       user       = new getUser()
 
