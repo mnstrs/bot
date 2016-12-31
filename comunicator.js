@@ -9,7 +9,7 @@ function messenger() {
         database   = new firebase(),
         quickAction= new buttons(),
         messageData = {text: '😛'},
-        token      = "EAAN5QAbMFIsBAGsq2GqLgFC2tljsIEPZB6HBlbgKX3ubZBZCErnulkP93aet8Tpk5m4Y3gr116Mc7RKKhoXQYnZCB7JqESAZAAh6l4YZA8lOEO5NcZBZCF03gwnpX9Tg4pSgsDGxHGJTOQk83Ja4f3eWdfALC7C3krU9qmTv6Nec1QZDZD"
+        token      = "EAAN5QAbMFIsBACvD5rFueZAhxsr6KM3zgrYASWH0isqMfBvR0BvLZAQ8nNckYmk7xqTmA6UtkkbuwRLiGR2YpS8VvdlPxOmtFPvQt0WttEZAagiwNBONgx9crRMSjstaYdTeWZBOkZBVoYYxYSH00y52ZAmNpRVavG31l7IBO0igZDZD"
 
     // this send messages to the user
     function sendText(sender, text) {
@@ -35,6 +35,16 @@ function messenger() {
             }
         })
 
+    }
+
+    // this function transform 1000 to R$ 1.000
+    function formatReal( int ){
+            var tmp = int+'';
+            tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+            if( tmp.length > 6 )
+                    tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+
+            return tmp;
     }
 
     // handle messagens /// NEED TO BE IMPROVED
@@ -92,12 +102,11 @@ function messenger() {
 
         let word = 'qualuqer coisa'
 
-        if(msg.startsWith("R$")){
-          word = 'true'
+        if(!isNaN(msg)){
+          word = 'R$ ' + formatReal(msg)
         }else{
-          word = 'false'
+          word = 'não é um numero'
         }
-
 
         messageData = {  text: word}
 
