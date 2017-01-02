@@ -1,15 +1,16 @@
 function getStartedButton() {
   'use strict'
 
-  let token   = 'EAAN5QAbMFIsBAGsq2GqLgFC2tljsIEPZB6HBlbgKX3ubZBZCErnulkP93aet8Tpk5m4Y3gr116Mc7RKKhoXQYnZCB7JqESAZAAh6l4YZA8lOEO5NcZBZCF03gwnpX9Tg4pSgsDGxHGJTOQk83Ja4f3eWdfALC7C3krU9qmTv6Nec1QZDZD'
-  let request = require('request')
+  let request     = require('request'),
+      token       = require('./token'),
+      tokenValue  = new token()
 
   this.showStarterButton = function() {
 
     request({
         url: 'https://graph.facebook.com/v2.6/me/thread_settings',
         qs: {
-            access_token: token
+            access_token: tokenValue.tokenVar()
         },
         method: 'POST',
         json:{

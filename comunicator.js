@@ -1,15 +1,25 @@
 function messenger() {
-  'use strict'
 
-    let request    = require('request'),
-        firebase   = require('./firebase'),
-        getUser    = require('./getUserData'),
-        buttons    = require('./quickActions'),
-        user       = new getUser(),
-        database   = new firebase(),
-        quickAction= new buttons(),
-        messageData = {text: '😛'},
-        token      = "EAAN5QAbMFIsBACvD5rFueZAhxsr6KM3zgrYASWH0isqMfBvR0BvLZAQ8nNckYmk7xqTmA6UtkkbuwRLiGR2YpS8VvdlPxOmtFPvQt0WttEZAagiwNBONgx9crRMSjstaYdTeWZBOkZBVoYYxYSH00y52ZAmNpRVavG31l7IBO0igZDZD"
+    'use strict'
+
+    let request = require('request'),
+        firebase = require('./addToFirebase'),
+        token = require('./token'),
+        emoji = require('./emoji'),
+        gtFirebase = require('./getFromFirebase'),
+        getUser = require('./getUserData'),
+        buttons = require('./quickActions'),
+        user = new getUser(),
+        emojiRnd = new emoji(),
+        tokenValue = new token(),
+        database = new firebase(),
+        gtDatabase = new gtFirebase(),
+        quickAction = new buttons(),
+        messageData = {
+            text: '😛'
+        },
+        userDataDb = ''
+
 
     // this send messages to the user
     function sendText(sender, text) {
@@ -17,7 +27,7 @@ function messenger() {
         request({
             url: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {
-                access_token: token
+                access_token: tokenValue.tokenVar()
             },
             method: 'POST',
             json: {
@@ -31,161 +41,239 @@ function messenger() {
             if (error) {
                 // console.log('Error: sendText', error + "<-")
             } else if (response.body.error) {
-               //  console.log('Error:  sendText', response.body.error)
+                //  console.log('Error:  sendText', response.body.error)
             }
         })
 
     }
 
     // this function transform 1000 to R$ 1.000
-    function formatReal( int ){
-            var tmp = int+'';
-            tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
-            if( tmp.length > 6 )
-                    tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+    Number.prototype.formatMoney = function(c, d, t) {
+        var n = this,
+            c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "," : d,
+            t = t == undefined ? "." : t,
+            s = n < 0 ? "-" : "",
+            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+            j = (j = i.length) > 3 ? j % 3 : 0
 
-            return tmp;
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "")
     }
+    // (Number(VALOR)).formatMoney(2, ',', '.')
 
     // handle messagens /// NEED TO BE IMPROVED
-    function handleMessage(event, sender, userName, userData){
+    function handleMessage(event, sender) {
 
-      let name        =  userName,
-          fullName    = name +' '+ userData.last_name,
-          msg         = event.message.text
+        let userData = user.getInfo(sender),
+            msg = event.message
 
-      if(event.message.quick_reply){
-        msg =  event.message.quick_reply.payload
+        gtDatabase.currentUser(sender, 'users').then(function(value) {
 
-        if(!event.message.is_echo){
-          console.log('🐘 PAYLOAD -> ',msg)
-        }
+            console.log('👉', value)
 
-        switch (msg) {
+            if (msg.quick_reply) {
 
-          case 'pick_profissional':
-            database.userAdd(fullName, sender)
-            messageData = quickAction.handleAction('interestArea', name)
-          break
+                if (msg.quick_reply.payload) {
+                    switch (msg.quick_reply.payload) {
 
-          case 'pick_empresa':
-            messageData = {  text: 'Desculpe, ainda estamos trabalhando no cadastro de empresa'  }
-          break
+                        case 'pick_profissional':
+                            database.userAdd(userData.first_name + ' ' + userData.last_name, sender)
+                            messageData = quickAction.handleAction('interestArea', userData.first_name)
+                            break
 
-          case 'pick_design':
-            database.knowledgeAdd(fullName, event.message.text)
-            messageData = quickAction.handleAction('cityAndRegion', name)
-          break
+                        case 'pick_empresa':
+                            messageData = {
+                                text: 'Desculpe, ainda estamos trabalhando no cadastro de empresa'
+                            }
+                            break
 
-          case 'pick_front-end':
-            database.knowledgeAdd(fullName, event.message.text)
-            messageData = quickAction.handleAction('cityAndRegion', name)
-          break
+                        case 'pick_design':
+                            database.knowledgeAdd(sender, msg.text)
+                            messageData = {
+                                text: 'Qual a sua pretenção sálarial? Exemplo "3000"'
+                            }
+                            break
 
-          case 'pick_full-stack':
-            database.knowledgeAdd(fullName, event.message.text)
-            messageData = quickAction.handleAction('cityAndRegion', name)
-          break
+                        case 'pick_front-end':
+                            database.knowledgeAdd(sender, msg.text)
+                            messageData = {
+                                text: 'Qual a sua pretenção sálarial? Exemplo "3000"'
+                            }
+                            break
 
-          case 'pick_back-end':
-            database.knowledgeAdd(fullName, event.message.text)
-            messageData = quickAction.handleAction('cityAndRegion', name)
-          break
+                        case 'pick_full-stack':
+                            database.knowledgeAdd(sender, msg.text)
+                            messageData = {
+                                text: 'Qual a sua pretenção sálarial? Exemplo "3000"'
+                            }
+                            break
 
-          default:
-            messageData = {  text: '😊'}
-        }
+                        case 'pick_back-end':
+                            database.knowledgeAdd(sender, msg.text)
+                            messageData = {
+                                text: 'Qual a sua pretenção sálarial? Exemplo "3000"'
+                            }
+                            break
 
-      } else if(!event.message.is_echo){
+                        default:
+                            messageData = {
+                                text: '😊'
+                            }
 
-        console.log(msg.startsWith("R$") , '🎬', msg)
+                    }
+                }
 
-        let word = 'qualuqer coisa'
+            } else {
 
-        if(!isNaN(msg)){
-          word = 'R$ ' + formatReal(msg)
-        }else{
-          word = 'não é um numero'
-        }
+                if (!isNaN(msg.text)) {
 
-        messageData = {  text: word}
+                    messageData = {
+                        text: '💵'　
+                    }
 
-        // console.log('😈 -> ', event)
-      }else{
+                    if (value.salary == null) {
 
-        messageData = {  text: 'Ainda não sei conversar com humanos, desculpe.'}
-        // if(!event.message.is_echo)
-        //   console.log(event.message)
-      }
+                        database.salary(sender, msg.text)
 
-      // send the result
-      sendText(sender, messageData)
+                        if(value.address == null)
+                          sendText(sender, quickAction.handleAction('cityAndRegion', sender))
 
+                    } else {
+
+                        messageData = {
+                            text: 'Você enviou um número, quer atualizar o salário pretendido?'
+                        }
+
+                    }
+
+                } else {
+
+                    switch (msg.text) {
+
+                        case 'Olá':
+                            messageData = {
+                                text: 'Olá'
+                            }
+                            break
+
+                        case 'Oi':
+                            messageData = {
+                                text: 'Oi'
+                            }
+                            break
+
+                        case 'Res':
+                            messageData = quickAction.handleAction('professionalOrEnterprise')
+                            break
+
+                        default:
+                            messageData = {
+                                text: 'Um texto qualquer ' + emojiRnd.emoji()
+                            }
+                    }
+
+                }
+
+            }
+            // send the result
+            sendText(sender, messageData)
+        })
     }
 
     // handle attachments (images, location, ...)
-    function handleAttachments(attachment, userData, sender){
+    function handleAttachments(attachment, sender) {
+        let userData = user.getInfo(sender)
 
-        let type = attachment.type,
-            fullName    = userData.first_name +' '+ userData.last_name
+        // console.log(attachment)
 
-         switch (type) {
-          case 'location':
-            database.userLocal(attachment.payload.coordinates.lat, attachment.payload.coordinates.long, fullName)
-            messageData = {  text: 'Qual a sua pretenção sálarial? (Ex: R$ 3.000)'}
-          break
+        switch (attachment.type) {
 
-          default:
-            messageData = quickAction.handleAction('cityAndRegion', userData.first_name)
+            case 'location':
+                messageData = {
+                    text: '🏡'
+                }
+                /*
+                ** CHANGE
+                  aqui devo testar se o usuário já está cadastrado antes de salvar os dados dele.
+                */
 
+                gtDatabase.currentUser(sender, 'users').then(function(value) {
+
+                    if (value.full_name == null) {
+                        sendText(sender, quickAction.handleAction('professionalOrEnterprise'))
+                    } else if (value.knowledge == null) {
+                        sendText(sender, quickAction.handleAction('interestArea', userData.first_name))
+                    } else if (value.address == null) {
+                        database.userLocal(attachment.payload.coordinates.lat, attachment.payload.coordinates.long, sender)
+                        messageData = {
+                            text: 'tudo pronto :)'
+                        }
+                        sendText(sender, messageData)
+                    } else {
+                        messageData = {
+                            text: 'Gostaria de mudar o seu endereço?'
+                        }
+                        sendText(sender, messageData)
+                    }
+
+                })
+
+                break
+
+            case 'image':
+                messageData = {
+                    text: 'Bonito.'
+                }
+                break
+
+            default:
+                messageData = quickAction.handleAction('cityAndRegion', userData.first_name)
         }
         // send the result
         sendText(sender, messageData)
 
-      }
+    }
 
     // this receive messagens and kind deal with that
     this.receive = (req, res) => {
-        for(let x = 0; x < req.body.entry.length; x++){
+        for (let x = 0; x < req.body.entry.length; x++) {
 
             let messaging_events = req.body.entry[x].messaging
 
             for (let i = 0; i < messaging_events.length; i++) {
 
-              let event     = req.body.entry[0].messaging[i],
-                  sender    = event.sender.id,
-                  userData  = user.getInfo(sender),
-                  firstName = userData.first_name
+                let event = req.body.entry[0].messaging[i],
+                    sender = event.sender.id
 
-              // if user send a message
-              if(event.message){
+                // if user send a message
+                if (event.message) {
+                    // if it is an attachment (location or media)
+                    if (!event.message.is_echo) {
+                        if (event.message.attachments) {
+                            handleAttachments(event.message.attachments[0], sender)
+                        } else {
+                            handleMessage(event, sender)
+                        }
+                    }
 
-                // if it is an attachment (location or media)
-                if(event.message.attachments){
-                  handleAttachments(event.message.attachments[0], userData, sender)
-                }else{
-                  handleMessage(event, sender, firstName, userData)
+                    // if is postback
+                } else if (event.postback) {
+
+                    switch (event.postback.payload) {
+
+                        case 'GET STARTED':
+                            messageData = quickAction.handleAction('professionalOrEnterprise')
+                            break
+
+                        default:
+                            messageData = {
+                                text: 'O que você clicou? Não reconheço essa ação.'
+                            }
+                    }
+                    // send the result
+                    sendText(sender, messageData)
                 }
-
-              // if is postback
-              }else if(event.postback){
-
-                  let payload = event.postback.payload
-
-                  switch (payload) {
-
-                    case 'GET STARTED':
-                      let content     = quickAction.handleAction('professionalOrEnterprise')
-                          messageData = content
-                    break
-
-                   default:
-                      messageData = {  text: 'O que você clicou? Não reconheço essa ação.'}
-                  }
-                   // send the result
-                  sendText(sender, messageData)
-              }
-          }
+            }
         }
         res.sendStatus(200)
     }

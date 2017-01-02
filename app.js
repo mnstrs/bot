@@ -3,9 +3,16 @@ var express          = require('express'),
     bodyParser       = require('body-parser'),
     workMessages     = require('./comunicator'),
     getStarted       = require('./getStartedButton'),
+    admin             = require('firebase-admin'),
     getStartedBtn    = new getStarted(),
     messenger        = new workMessages()
 
+
+  // Conect to firebase
+  fire = admin.initializeApp({
+    credential: admin.credential.cert('./agendinha-e52a9b9b8831.json'),
+    databaseURL: "https://agendinha-b218a.firebaseio.com"
+  })
 
 app.use(bodyParser.json())
 
