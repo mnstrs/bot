@@ -1,3 +1,5 @@
+
+
 'use strict'
 
 var request     = require('request'),
@@ -19,13 +21,12 @@ function getUserData(){
 
     rp(options)
         .then(function (response) {
-          userInfo    =  response
+          userInfo    = response
         }) .catch(function (err) {
           userInfo    = err
         })
 
-  return userInfo
-
+        return userInfo
   }
 
 

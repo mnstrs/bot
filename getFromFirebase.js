@@ -4,6 +4,8 @@ function getDatabase() {
     let slugify = require('slugify'),
         data = ''
 
+
+    // get specific data
     this.fromUsers = function(sender, dataToGet, type) {
 
         let where = global.fire.database()
@@ -14,7 +16,7 @@ function getDatabase() {
 
     }
 
-
+    // get all user data
     this.currentUser = function(sender, type) {
 
         let where = global.fire.database()

@@ -27,7 +27,7 @@ function quickReplies() {
 
             case 'interestArea':
                 text = {
-                    text: user + ', Qual a sua àrea de interesse?',
+                    text: ' Qual a sua àrea de interesse?',
                     quick_replies: [{
                             content_type: 'text',
                             title: 'Design',

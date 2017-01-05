@@ -2,18 +2,22 @@ function messenger() {
 
     'use strict'
 
-    let request = require('request'),
-        firebase = require('./addToFirebase'),
-        token = require('./token'),
-        emoji = require('./emoji'),
-        gtFirebase = require('./getFromFirebase'),
-        getUser = require('./getUserData'),
-        buttons = require('./quickActions'),
-        user = new getUser(),
-        emojiRnd = new emoji(),
-        tokenValue = new token(),
-        database = new firebase(),
-        gtDatabase = new gtFirebase(),
+    let request     = require('request'),
+        firebase    = require('./addToFirebase'),
+        token       = require('./token'),
+        emoji       = require('./emoji'),
+        gtFirebase  = require('./getFromFirebase'),
+        getUser     = require('./getUserData'),
+        buttons     = require('./quickActions'),
+
+        match     = require('./matcher'),
+        matcher   = new match(),
+
+        user        = new getUser(),
+        emojiRnd    = new emoji(),
+        tokenValue  = new token(),
+        database    = new firebase(),
+        gtDatabase  = new gtFirebase(),
         quickAction = new buttons(),
         messageData = {
             text: '😛'
@@ -67,9 +71,10 @@ function messenger() {
         let userData = user.getInfo(sender),
             msg = event.message
 
+
         gtDatabase.currentUser(sender, 'users').then(function(value) {
 
-            console.log('👉', value)
+            // console.log('👉', value)
 
             if (msg.quick_reply) {
 
@@ -78,7 +83,7 @@ function messenger() {
 
                         case 'pick_profissional':
                             database.userAdd(userData.first_name + ' ' + userData.last_name, sender)
-                            messageData = quickAction.handleAction('interestArea', userData.first_name)
+                            messageData = quickAction.handleAction('interestArea', sender)
                             break
 
                         case 'pick_empresa':
@@ -136,7 +141,7 @@ function messenger() {
                         database.salary(sender, msg.text)
 
                         if(value.address == null)
-                          sendText(sender, quickAction.handleAction('cityAndRegion', sender))
+                            messageData =  quickAction.handleAction('cityAndRegion', sender)
 
                     } else {
 
@@ -152,8 +157,9 @@ function messenger() {
 
                         case 'Olá':
                             messageData = {
-                                text: 'Olá'
+                                text: 'Olá ' + userData.first_name
                             }
+                            userData = ''
                             break
 
                         case 'Oi':
@@ -182,38 +188,36 @@ function messenger() {
 
     // handle attachments (images, location, ...)
     function handleAttachments(attachment, sender) {
-        let userData = user.getInfo(sender)
 
-        // console.log(attachment)
+        /* let userData = user.getInfo(sender) */
 
         switch (attachment.type) {
 
             case 'location':
-                messageData = {
-                    text: '🏡'
-                }
-                /*
-                ** CHANGE
-                  aqui devo testar se o usuário já está cadastrado antes de salvar os dados dele.
-                */
+
+                messageData = { text: '🏡'}
+
+                /* CHANGE aqui devo testar se o usuário já está cadastrado antes de salvar os dados dele.*/
 
                 gtDatabase.currentUser(sender, 'users').then(function(value) {
 
                     if (value.full_name == null) {
+
                         sendText(sender, quickAction.handleAction('professionalOrEnterprise'))
+
                     } else if (value.knowledge == null) {
-                        sendText(sender, quickAction.handleAction('interestArea', userData.first_name))
+
+                        sendText(sender, quickAction.handleAction('interestArea', sender))
+
                     } else if (value.address == null) {
+
                         database.userLocal(attachment.payload.coordinates.lat, attachment.payload.coordinates.long, sender)
-                        messageData = {
-                            text: 'tudo pronto :)'
-                        }
-                        sendText(sender, messageData)
+                        sendText(sender, {text: 'Tudo pronto :)'})
+
                     } else {
-                        messageData = {
-                            text: 'Gostaria de mudar o seu endereço?'
-                        }
-                        sendText(sender, messageData)
+
+                        sendText(sender, {text: 'Gostaria de mudar o seu endereço?'  })
+
                     }
 
                 })
@@ -221,13 +225,11 @@ function messenger() {
                 break
 
             case 'image':
-                messageData = {
-                    text: 'Bonito.'
-                }
+                messageData = {  text: 'Bonito' }
                 break
 
             default:
-                messageData = quickAction.handleAction('cityAndRegion', userData.first_name)
+                messageData = quickAction.handleAction('cityAndRegion', sender)
         }
         // send the result
         sendText(sender, messageData)
@@ -247,13 +249,17 @@ function messenger() {
 
                 // if user send a message
                 if (event.message) {
+
                     // if it is an attachment (location or media)
                     if (!event.message.is_echo) {
+                        matcher.allUsers(sender)
+
                         if (event.message.attachments) {
                             handleAttachments(event.message.attachments[0], sender)
                         } else {
                             handleMessage(event, sender)
                         }
+
                     }
 
                     // if is postback

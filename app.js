@@ -4,6 +4,9 @@ var express          = require('express'),
     workMessages     = require('./comunicator'),
     getStarted       = require('./getStartedButton'),
     admin             = require('firebase-admin'),
+
+
+
     getStartedBtn    = new getStarted(),
     messenger        = new workMessages()
 
@@ -35,6 +38,7 @@ app.get('/webhook', function(req, res) {
 
 // showing get started button
 getStartedBtn.getStarted()
+
 
 // send messenges
 app.post('/webhook', function (req, res) {
