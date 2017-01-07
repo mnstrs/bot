@@ -15,8 +15,10 @@
     "fb": "^1.1.1",
     "firebase": "^3.5.2",
     "firebase-admin": "^4.0.1",
+    "firebase-queue": "^1.6.1",
     "firebase-tools": "^3.0.8",
     "request": "^2.75.0",
+    "request-promise": "^4.1.1",
     "slugify": "^1.0.2"
   },
   "repository": {

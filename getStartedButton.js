@@ -2,14 +2,19 @@
 function getStartedButton() {
   'use strict'
 
-  let request = require('request'),
-      token      = "EAAN5QAbMFIsBACvD5rFueZAhxsr6KM3zgrYASWH0isqMfBvR0BvLZAQ8nNckYmk7xqTmA6UtkkbuwRLiGR2YpS8VvdlPxOmtFPvQt0WttEZAagiwNBONgx9crRMSjstaYdTeWZBOkZBVoYYxYSH00y52ZAmNpRVavG31l7IBO0igZDZD",
-      getUser = require('./getUserData'),
-      user       = new getUser()
+  let request     = require('request'),
+      getUser     = require('./getUserData'),
+      token       = require('./token'),
+      tokenValue  = new token(),
+      user        = new getUser()
+
 
   this.getStarted = function(sender, text){
+
+    let userData = user.getInfo(sender)
+
     request({
-        url: 'https://graph.facebook.com/v2.6/me/thread_settings?access_token='+ token,
+        url: 'https://graph.facebook.com/v2.6/me/thread_settings?access_token='+ tokenValue.tokenVar(),
         method: 'POST',
         json: {
           "setting_type":"call_to_actions",
@@ -21,18 +26,20 @@ function getStartedButton() {
           ]
         }
     },function (error, response, body){
+<<<<<<< HEAD
           if (!error && response.statusCode == 200)
             console.log('deu certo')
 
+=======
+          // if (!error && response.statusCode == 200){
+          //   console.log('deu certo')
+          // }
+>>>>>>> a1820e59eb323143ed340e8939ab1c2cb2a0d1f0
         }
     )
 
-    let userData = user.getInfo(sender)
 
   }
-
-
-
 
 }
 
