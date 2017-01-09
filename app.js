@@ -43,17 +43,6 @@ app.get('/webhook', function(req, res) {
 // showing get started button
 getStartedBtn.getStarted()
 
-matcher.fromUser('1090761591038429').then((returned) => {
-
-  let object = returned.companies
-
-  Object.keys(object).forEach((key) => {
-
-    console.log(object[key].company)
-
-  })
-
-})
 
 // send messenges
 app.post('/webhook', function(req, res) {
