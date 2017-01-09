@@ -162,19 +162,37 @@ function messenger() {
                             break
 
                         case 'Vagas':
-                            matcher.fromUser(sender)
+                              matcher.fromUser(sender).then((returned) => {
+                                console.log(returned)
+                              })
                             break
 
                         case 'Vaga':
-                            matcher.fromUser(sender)
+                              matcher.fromUser(sender).then((returned) => {
+                                sendText(sender, {text: 'achei algo'  })
+
+                                let object = returned.companies
+
+                                Object.keys(object).forEach((key) => {
+
+                                  sendText(sender, {text: object[key].company + ' R$ ' +  (Number(object[key].salary)).formatMoney(2, ',', '.') })
+
+                                })
+
+
+                              })
                             break
 
                         case 'vagas':
-                            matcher.fromUser(sender)
+                              matcher.fromUser(sender).then((returned) => {
+                                console.log(returned)
+                              })
                             break
 
                         case 'vaga':
-                            matcher.fromUser(sender)
+                              matcher.fromUser(sender).then((returned) => {
+                                console.log(returned)
+                              })
                             break
 
                         case 'Res':

@@ -1,7 +1,7 @@
 'use strict'
 
-var request     = require('request'),
-    rp          = require('request-promise'),
+var request = require('request'),
+    rp = require('request-promise'),
     userData = {}
 
 function fromDb() {
@@ -10,52 +10,56 @@ function fromDb() {
     // get specific data
     let getfromUser = function(sender) {
 
-      let where = global.fire.database()
+        let where = global.fire.database()
 
-      return where.ref('users').child(sender).once('value').then(function(thisValue) {
+        return where.ref('users').child(sender).once('value').then((snap) => {
 
-        userData.address = thisValue.val().address.formatted_address
-        userData.salary  = thisValue.val().salary
-        userData.area    = thisValue.val().knowledge
+            userData.address = snap.val().address.formatted_address
+            userData.salary = snap.val().salary
+            userData.knowledge = snap.val().knowledge
 
-        return userData
+            return userData
 
-      })
-
-    }
-
-    let getfromJobs = function(area) {
-
-      let where = global.fire.database()
-
-      return where.ref('users').child(sender).once('value').then(function(thisValue) {
-
-        return thisValue.salary
-
-      })
+        })
 
     }
 
+    let getfromJobs = (area, address, salary) => {
+
+        let where = global.fire.database()
+
+        return where.ref('jobs').once('value').then((snap) => {
+
+            let object = snap.val(),
+                jobs = {}
+
+            Object.keys(object).forEach((key) => {
+
+                if (
+                    object[key].salary == salary &&
+                    object[key].opportunity == area &&
+                    object[key].address == address.formatted_address) {
+                    jobs.companies = object
+                }
+
+            })
+
+            return jobs
+
+        })
+    }
 
 
-    this.fromUser = function(sender){
 
-      let where = global.fire.database()
+    this.fromUser = (sender) => {
 
-      getfromUser(sender).then(function(value) {
+      return getfromUser(sender).then((value) => {
 
-        console.log('hey : ', value.area)
+            return getfromJobs(value.knowledge, value.address, value.salary).then((jobs) => {
+                return jobs
+            })
 
-      })
-
-
-      getfromJobs(sender).then(function(thisArea){
-
-        console.log('retorno : ', thisArea)
-
-      })
-
-
+        })
 
     }
 

@@ -77,7 +77,7 @@ function quickReplies() {
 
             case 'cityAndRegion':
                 text = {
-                    text: 'Em qual cidade você quer trabalhar? Compartilhe a sua localização ou escreva "Cidade/UF"',
+                    text: 'Em qual cidade você quer trabalhar? Compartilhe a localização"',
                     quick_replies: [{
                         content_type: 'location',
                         title: 'Compartilhar localização',
