@@ -246,6 +246,20 @@ function messenger() {
                       database.local(attachment.payload.coordinates.lat, attachment.payload.coordinates.long, sender)
                       sendText(sender, {text: 'Tudo pronto 🙂'})
 
+                      matcher.fromUser(sender).then((returned) => {
+
+                        let object = returned.companies
+
+                        Object.keys(object).forEach((key) => {
+
+                          sendText(sender, {text: object[key].company + ' R$ ' +  (Number(object[key].salary)).formatMoney(2, ',', '.') })
+
+                        })
+
+
+                      })
+
+
                     } else {
 
                         sendText(sender, {text: 'Gostaria de mudar o seu endereço?'  })
