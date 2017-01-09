@@ -26,15 +26,10 @@ function getStartedButton() {
           ]
         }
     },function (error, response, body){
-<<<<<<< HEAD
-          if (!error && response.statusCode == 200)
-            console.log('deu certo')
 
-=======
           // if (!error && response.statusCode == 200){
           //   console.log('deu certo')
           // }
->>>>>>> a1820e59eb323143ed340e8939ab1c2cb2a0d1f0
         }
     )
 

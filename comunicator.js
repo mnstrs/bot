@@ -7,13 +7,11 @@ function messenger() {
         token       = require('./token'),
         emoji       = require('./emoji'),
         gtFirebase  = require('./getFromFirebase'),
-        getUser     = require('./getUserData'),
         buttons     = require('./quickActions'),
 
         match     = require('./matcher'),
         matcher   = new match(),
 
-        user        = new getUser(),
         emojiRnd    = new emoji(),
         tokenValue  = new token(),
         database    = new firebase(),
@@ -21,9 +19,7 @@ function messenger() {
         quickAction = new buttons(),
         messageData = {
             text: '😛'
-        },
-        userDataDb = ''
-
+        }
 
     // this send messages to the user
     function sendText(sender, text) {
@@ -68,9 +64,7 @@ function messenger() {
     // handle messagens /// NEED TO BE IMPROVED
     function handleMessage(event, sender) {
 
-        let userData = user.getInfo(sender),
-            msg = event.message
-
+        let msg = event.message
 
         gtDatabase.currentUser(sender, 'users').then(function(value) {
 
@@ -82,7 +76,7 @@ function messenger() {
                     switch (msg.quick_reply.payload) {
 
                         case 'pick_profissional':
-                            database.userAdd(userData.first_name + ' ' + userData.last_name, sender)
+                            database.userAdd(sender)
                             messageData = quickAction.handleAction('interestArea', sender)
                             break
 
@@ -140,19 +134,10 @@ function messenger() {
 
                         database.salary(sender, msg.text)
 
-                        if(value.address == null)
+                        if (value.address == null || value.address == 'undefined')
                             messageData =  quickAction.handleAction('cityAndRegion', sender)
 
-<<<<<<< HEAD
-          case 'pick_design':
-            database.knowledgeAdd(fullName, event.message.text)
-            messageData = quickAction.handleAction('cityAndRegion', name)
-            sendText(sender, messageData)
-
-          break
-=======
                     } else {
->>>>>>> a1820e59eb323143ed340e8939ab1c2cb2a0d1f0
 
                         messageData = {
                             text: 'Você enviou um número, quer atualizar o salário pretendido?'
@@ -164,22 +149,32 @@ function messenger() {
 
                     switch (msg.text) {
 
-<<<<<<< HEAD
-
-      } else if(!event.message.is_echo){
-=======
                         case 'Olá':
                             messageData = {
-                                text: 'Olá ' + userData.first_name
+                                text: 'Olá, ' + value.name
                             }
-                            userData = ''
                             break
->>>>>>> a1820e59eb323143ed340e8939ab1c2cb2a0d1f0
 
                         case 'Oi':
                             messageData = {
                                 text: 'Oi'
                             }
+                            break
+
+                        case 'Vagas':
+                            matcher.fromUser(sender)
+                            break
+
+                        case 'Vaga':
+                            matcher.fromUser(sender)
+                            break
+
+                        case 'vagas':
+                            matcher.fromUser(sender)
+                            break
+
+                        case 'vaga':
+                            matcher.fromUser(sender)
                             break
 
                         case 'Res':
@@ -215,18 +210,23 @@ function messenger() {
 
                 gtDatabase.currentUser(sender, 'users').then(function(value) {
 
+
                     if (value.full_name == null) {
 
-                        sendText(sender, quickAction.handleAction('professionalOrEnterprise'))
+                      sendText(sender, quickAction.handleAction('professionalOrEnterprise'))
 
-                    } else if (value.knowledge == null) {
+                    }
 
-                        sendText(sender, quickAction.handleAction('interestArea', sender))
+                    else if (value.knowledge == null) {
 
-                    } else if (value.address == null) {
+                      sendText(sender, quickAction.handleAction('interestArea', sender))
 
-                        database.userLocal(attachment.payload.coordinates.lat, attachment.payload.coordinates.long, sender)
-                        sendText(sender, {text: 'Tudo pronto :)'})
+                    }
+
+                    else if (value.address == null || value.address == 'undefined') {
+
+                      database.local(attachment.payload.coordinates.lat, attachment.payload.coordinates.long, sender)
+                      sendText(sender, {text: 'Tudo pronto 🙂'})
 
                     } else {
 
@@ -266,7 +266,7 @@ function messenger() {
 
                     // if it is an attachment (location or media)
                     if (!event.message.is_echo) {
-                        matcher.allUsers(sender)
+                        // matcher.allUsers(sender)
 
                         if (event.message.attachments) {
                             handleAttachments(event.message.attachments[0], sender)
@@ -276,13 +276,8 @@ function messenger() {
 
                     }
 
-<<<<<<< HEAD
-
-                  let payload = event.postback.payload
-=======
                     // if is postback
                 } else if (event.postback) {
->>>>>>> a1820e59eb323143ed340e8939ab1c2cb2a0d1f0
 
                     switch (event.postback.payload) {
 
@@ -290,30 +285,18 @@ function messenger() {
                             messageData = quickAction.handleAction('professionalOrEnterprise')
                             break
 
-<<<<<<< HEAD
-                   default:
-                      messageData = {  text: 'O que você clicou? Não reconheço essa ação.'}
-                  }
-                   // send the result
-                  sendText(sender, messageData)
-              }
-          }
-
-=======
                         default:
                             messageData = {
                                 text: 'O que você clicou? Não reconheço essa ação.'
                             }
+
                     }
                     // send the result
                     sendText(sender, messageData)
                 }
             }
->>>>>>> a1820e59eb323143ed340e8939ab1c2cb2a0d1f0
         }
-
         res.sendStatus(200)
-
     }
 
 }
