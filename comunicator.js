@@ -81,8 +81,6 @@ function messenger() {
     }
     ///////*
 
-
-
     // this function transform 1000 to R$ 1.000
     Number.prototype.formatMoney = (c, d, t) => {
         var n = this,
@@ -104,7 +102,7 @@ function messenger() {
 
         gtDatabase.currentUser(sender, 'users').then((value) => {
 
-            // console.log('👉', value)
+            console.log('👉', value)
 
             if (msg.quick_reply) {
 
