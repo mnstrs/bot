@@ -47,8 +47,44 @@ function messenger() {
 
     }
 
+
+    /////*
+    function sendGenericMessage(sender) {
+      messageData = {
+        message: {
+          attachment: {
+            type: "template",
+            payload: {
+              template_type: "generic",
+              elements: [{
+                title: "rift",
+                subtitle: "Next-generation virtual reality",
+                item_url: "https://www.oculus.com/en-us/rift/",
+                image_url: "http://messengerdemo.parseapp.com/img/rift.png",
+                buttons: [{
+                  type: "web_url",
+                  url: "https://www.oculus.com/en-us/rift/",
+                  title: "Open Web URL"
+                }, {
+                  type: "postback",
+                  title: "Call Postback",
+                  payload: "Payload for first bubble",
+                }],
+              }]
+            }
+          }
+        }
+      };
+
+      sendText(sender, messageData.message)
+
+    }
+    ///////*
+
+
+
     // this function transform 1000 to R$ 1.000
-    Number.prototype.formatMoney = function(c, d, t) {
+    Number.prototype.formatMoney = (c, d, t) => {
         var n = this,
             c = isNaN(c = Math.abs(c)) ? 2 : c,
             d = d == undefined ? "," : d,
@@ -66,7 +102,7 @@ function messenger() {
 
         let msg = event.message
 
-        gtDatabase.currentUser(sender, 'users').then(function(value) {
+        gtDatabase.currentUser(sender, 'users').then((value) => {
 
             // console.log('👉', value)
 
@@ -77,7 +113,7 @@ function messenger() {
 
                         case 'pick_profissional':
                             database.userAdd(sender)
-                            messageData = quickAction.handleAction('interestArea', sender)
+                            messageData = quickAction.handler('interestArea', sender)
                             break
 
                         case 'pick_empresa':
@@ -135,7 +171,7 @@ function messenger() {
                         database.salary(sender, msg.text)
 
                         if (value.address == null || value.address == 'undefined')
-                            messageData =  quickAction.handleAction('cityAndRegion', sender)
+                            messageData =  quickAction.handler('cityAndRegion', sender)
 
                     } else {
 
@@ -174,9 +210,8 @@ function messenger() {
                                 let object = returned.companies
 
                                 Object.keys(object).forEach((key) => {
-
-                                  sendText(sender, {text: object[key].company + ' R$ ' +  (Number(object[key].salary)).formatMoney(2, ',', '.') })
-
+                                  sendText(sender, {text: object[key].company})
+                                  sendGenericMessage(sender)
                                 })
 
 
@@ -196,7 +231,7 @@ function messenger() {
                             break
 
                         case 'Res':
-                            messageData = quickAction.handleAction('professionalOrEnterprise')
+                            messageData = quickAction.handler('professionalOrEnterprise')
                             break
 
                         default:
@@ -231,13 +266,13 @@ function messenger() {
 
                     if (value.full_name == null) {
 
-                      sendText(sender, quickAction.handleAction('professionalOrEnterprise'))
+                      sendText(sender, quickAction.handler('professionalOrEnterprise'))
 
                     }
 
                     else if (value.knowledge == null) {
 
-                      sendText(sender, quickAction.handleAction('interestArea', sender))
+                      sendText(sender, quickAction.handler('interestArea', sender))
 
                     }
 
@@ -252,10 +287,9 @@ function messenger() {
 
                         Object.keys(object).forEach((key) => {
 
-                          sendText(sender, {text: object[key].company + ' R$ ' +  (Number(object[key].salary)).formatMoney(2, ',', '.') })
+                          sendText(sender, {text: object[key].company})
 
                         })
-
 
                       })
 
@@ -275,7 +309,7 @@ function messenger() {
                 break
 
             default:
-                messageData = quickAction.handleAction('cityAndRegion', sender)
+                messageData = quickAction.handler('cityAndRegion', sender)
         }
         // send the result
         sendText(sender, messageData)
@@ -314,7 +348,7 @@ function messenger() {
                     switch (event.postback.payload) {
 
                         case 'GET STARTED':
-                            messageData = quickAction.handleAction('professionalOrEnterprise')
+                            messageData = quickAction.handler('professionalOrEnterprise')
                             break
 
                         default:

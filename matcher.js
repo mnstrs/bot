@@ -54,12 +54,10 @@ function fromDb() {
     this.fromUser = (sender) => {
 
       return getfromUser(sender).then((value) => {
-
-            return getfromJobs(value.knowledge, value.address, value.salary).then((jobs) => {
-                return jobs
-            })
-
+        return getfromJobs(value.knowledge, value.address, value.salary).then((jobs) => {
+          return jobs
         })
+      })
 
     }
 

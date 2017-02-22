@@ -24,3 +24,30 @@ curl -X POST -H "Content-Type: application/json" -d '{
 
 // User data
 //  curl -X GET "https://graph.facebook.com/v2.6/1090761591038429?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=EAAN5QAbMFIsBADIkwP0g4FVXElSfUpKEp8w3MwSZA2RsncmtLlLEJDPNbcBZBSKlaGr8H0EuahEwPVsXdl4cJ3R7gTDCGyqRDSsJmODZAZBFU4hHvcMaJTu8nQjiyeDCY9cGTLZANNJYtv1bhxsd8oZBkPFSUQfdzkrgHjvSi6awZDZD
+
+
+let messageData = {
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "generic",
+          elements: [{
+            title: maintenanceObject.title,
+            subtitle: maintenanceObject.description,
+            buttons: [{
+              type: "postback",
+              title: "Enviar",
+              payload: "Enviar"
+
+            }, {
+              type: "postback",
+              title: "Corrigir",
+              payload: "corrigir"
+
+            }],
+          }]
+        }
+      }
+    }
+}
